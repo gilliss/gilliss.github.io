@@ -71,7 +71,7 @@ h_bin_centers = h_bin_edges[:-1] + binWidX/2.
 ```
 
 
-![png](2018-03-21-binned-unbinned-spectral-fits-pymc3_files/fig_7_0.png)
+![png]({{ site.posts_url }}/2018-03-21-binned-unbinned-spectral-fits-pymc3_files/fig_7_0.png)
 
 
 # Modeling the data
