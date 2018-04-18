@@ -23,7 +23,7 @@ In this case, $\theta = \{\theta_1, \theta_2\} = \{w_1, \mu_1, \sigma_1, w_2, \m
 We simulate 3000 observations for this experiment as follows.
 
 
-{% highlight python %}
+{% highlight python linenos=table %}
 # import numpy for numerical operations on arrays and scipy for random number generation
 import numpy as np
 import scipy.stats as stats
