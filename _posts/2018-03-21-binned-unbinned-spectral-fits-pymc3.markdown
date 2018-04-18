@@ -127,8 +127,7 @@ with pm.Model() as model:
 >>    CompoundStep
 >> >Metropolis: [w2_interval__]
 >> >Metropolis: [w1_interval__]
->> 100%|██████████| 10500/10500 [00:03<00:00, 2886.57it/s]
->> Only one chain was sampled, this makes it impossible to run some convergence checks
+>> 100% ... 10500/10500 [00:03<00:00, 2886.57it/s]
 {% endhighlight %}
 
 Let's use the trace object from `PyMC3` to check out the results of the MCMC search.
@@ -141,9 +140,9 @@ import pandas as pd
 df_summary = pm.summary(trace)
 print(df_summary)
 
->>               mean         sd  mc_error      hpd_2.5     hpd_97.5
->>    w1   527.041567  18.323054  0.381805   490.273632   561.412043
->>    w2  1099.525432  25.340886  0.544281  1050.710203  1149.119203
+>>            mean         sd  mc_error      hpd_2.5     hpd_97.5
+>> w1   527.041567  18.323054  0.381805   490.273632   561.412043
+>> w2  1099.525432  25.340886  0.544281  1050.710203  1149.119203
 {% endhighlight %}
 
 We see that the ratio of weights is $w2/w1 \approx 2$, as we'd expect from our generating of the data; we drew twice as many events from `obsSource2` as we did from `obsSource1`.
@@ -194,8 +193,8 @@ nObs2_model = (1/binWidX) * w2 * 1 # 1 represents the integral of the nObs2 PDF
 print('predicted nObs = %.2f + %.2f = %.2f' % (nObs1_model, nObs2_model, nObs1_model + nObs2_model))
 print('actual nObs = %d' % nObs)
 
->>    predicted nObs = 975.03 + 2034.12 = 3009.15
->>    actual nObs = 3000
+>> predicted nObs = 975.03 + 2034.12 = 3009.15
+>> actual nObs = 3000
 {% endhighlight %}
 
 
@@ -268,11 +267,8 @@ with pm.Model() as model:
 >> CompoundStep
 >> >Metropolis: [w_stickbreaking__]
 >> >NUTS: [norm2, norm1]
->> 100%|█████████▉| 10464/10500 [00:22<00:00, 463.85it/s]/Applications/anaconda3/envs/Fit/lib/python3.6/site-packages/numpy/core/fromnumeric.py:2957: RuntimeWarning: Mean of empty slice.
->>   out=out, **kwargs)
->> 100%|██████████| 10500/10500 [00:22<00:00, 463.57it/s]
->> Tuning was enabled throughout the whole trace.
->> Only one chain was sampled, this makes it impossible to run some convergence checks
+>> 100% ... 10464/10500 [00:22<00:00, 463.85it/s]
+>> 100% ... 10500/10500 [00:22<00:00, 463.57it/s]
 {% endhighlight %}
 
 We use the trace object from `PyMC3` to check out the results of the MCMC search.
@@ -288,13 +284,12 @@ print('w2/w1 = %.2f' % (df_summary.loc['w__1']['mean'] / df_summary.loc['w__0'][
 # have pymc3 plot the chains and marginal likelihood distributions
 pm.traceplot(trace);
 
->>                  mean        sd  mc_error   hpd_2.5  hpd_97.5
->>    norm1__0 -0.983890  1.978366  0.018363 -4.940810  2.797312
->>    norm2__0  5.012095  1.972506  0.019112  1.221044  8.958915
->>    w__0      0.325619  0.009638  0.000227  0.306269  0.344305
->>    w__1      0.674381  0.009638  0.000227  0.655695  0.693731
->>
->>    w2/w1 = 2.07
+>>               mean        sd  mc_error   hpd_2.5  hpd_97.5
+>> norm1__0 -0.983890  1.978366  0.018363 -4.940810  2.797312
+>> norm2__0  5.012095  1.972506  0.019112  1.221044  8.958915
+>> w__0      0.325619  0.009638  0.000227  0.306269  0.344305
+>> w__1      0.674381  0.009638  0.000227  0.655695  0.693731
+>> w2/w1 = 2.07
 {% endhighlight %}
 
 
@@ -340,9 +335,9 @@ print('scaled predicted nObs = %d (%.2f + %.2f) = %.2f'
       % (nObs, nObs1_model, nObs2_model, nObs*(nObs1_model + nObs2_model)))
 print('actual nObs = %d' % nObs)
 
->>    predicted nObs = 0.33 + 0.67 = 1.00
->>    scaled predicted nObs = 3000 (0.33 + 0.67) = 3000.00
->>    actual nObs = 3000
+>> predicted nObs = 0.33 + 0.67 = 1.00
+>> scaled predicted nObs = 3000 (0.33 + 0.67) = 3000.00
+>> actual nObs = 3000
 {% endhighlight %}
 
 To visualize the model against the histogram of the data, we can either scale the model up to match the histogram— as we did in the previous cell—, or scale the histogram down to match the model. This scaling is needed, since our model would not be able to match the original bin heights— it knows nothing of them. The model knows only of the *density* of the data. Below, we scale the histogram to unit integral. We also plot a subset of the 3000 individual observations to convey how those observations are distributed.
