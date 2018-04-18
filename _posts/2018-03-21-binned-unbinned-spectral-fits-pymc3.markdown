@@ -98,7 +98,7 @@ Instead, we can intellegently sample points from the likelihood function using M
 
 
 {% highlight python linenos=table %}
-# import pymc for
+# import pymc for likelihood modeling and MCMC
 import pymc3 as pm
 
 # define the mixture model
