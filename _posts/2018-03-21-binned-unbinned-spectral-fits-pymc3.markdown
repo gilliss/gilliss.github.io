@@ -120,7 +120,7 @@ with pm.Model() as model:
     # set the sampler and feed the floated parameters
     step = pm.Metropolis([w1, w2])
 
-    # draw posterior samples
+    # draw samples
     trace = pm.sample(draws = 10000, step = step, chains = 1)
 
 >> Sequential sampling (1 chains in 1 job)
@@ -148,7 +148,7 @@ print(df_summary)
 We see that the ratio of weights is $w2/w1 \approx 2$, as we'd expect from our generating of the data; we drew twice as many events from `obsSource2` as we did from `obsSource1`.
 
 From the trace, we can also view the MCMC steps for each weight and histogram those steps to obtain each weight's
-marginal likelihood distribution (or marginal posterior distribution, if we had used non-uniform priors).
+marginal likelihood distribution (or marginal *posterior* distribution, if we had used non-uniform priors).
 
 
 {% highlight python linenos %}
@@ -260,7 +260,7 @@ with pm.Model() as model:
     # instantiate sampler
     step = pm.Metropolis(w)
 
-    # draw posterior samples
+    # draw samples
     trace = pm.sample(draws = 10000, step = step, chains = 1)
 
 >> Sequential sampling (1 chains in 1 job)
@@ -296,7 +296,7 @@ pm.traceplot(trace);
 ![png](/assets/2018-03-21-binned-unbinned-spectral-fits-pymc3_files/fig_29_1.png)
 
 
-Again we see that the ratio of weights is $w2/w1 ≈ 2$, as we expect. The `traceplot` displays histograms of MCMC samples from the two Normal components of the mixture models (labeled as `norm1` and `norm2`), and the marginal posterior distributions for each weight (with $w2$ in orange and $w1$ in blue).
+Again we see that the ratio of weights is $w2/w1 ≈ 2$, as we expect. The `traceplot` displays histograms of MCMC samples from the two Normal components of the mixture models (labeled as `norm1` and `norm2`), and the marginal likelihood distributions for each weight (with $w2$ in orange and $w1$ in blue).
 
 # Unbinned fit results
 
