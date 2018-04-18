@@ -71,7 +71,7 @@ h_bin_centers = h_bin_edges[:-1] + binWidX/2.
 ```
 
 
-![png](MixtureModelsBinnedUnbinned_files/MixtureModelsBinnedUnbinned_7_0.png)
+![png](2018-03-21-binned-unbinned-spectral-fits-pymc3_files/fig_7_0.png)
 
 
 # Modeling the data
@@ -165,7 +165,7 @@ pm.traceplot(trace);
 ```
 
 
-![png](MixtureModelsBinnedUnbinned_files/MixtureModelsBinnedUnbinned_18_0.png)
+![png](2018-03-21-binned-unbinned-spectral-fits-pymc3_files/fig_18_0.png)
 
 
 # Binned fit results
@@ -184,7 +184,7 @@ plt.colorbar(h2_image).set_label('Joint Likelihood')
 ```
 
 
-![png](MixtureModelsBinnedUnbinned_files/MixtureModelsBinnedUnbinned_21_0.png)
+![png](2018-03-21-binned-unbinned-spectral-fits-pymc3_files/fig_21_0.png)
 
 
 Taking the mean of each weight's marginal likelihood as a reasonable guess for the true weight, we can evaluate how closely the ML model matches the data.
@@ -227,7 +227,7 @@ plt.legend(loc = 'upper left');
 ```
 
 
-![png](MixtureModelsBinnedUnbinned_files/MixtureModelsBinnedUnbinned_24_0.png)
+![png](2018-03-21-binned-unbinned-spectral-fits-pymc3_files/fig_24_0.png)
 
 
 # An unbinned fit
@@ -308,7 +308,7 @@ pm.traceplot(trace);
 
 
 
-![png](MixtureModelsBinnedUnbinned_files/MixtureModelsBinnedUnbinned_29_1.png)
+![png](2018-03-21-binned-unbinned-spectral-fits-pymc3_files/fig_29_1.png)
 
 
 Again we see that the ratio of weights is $w2/w1 ≈ 2$, as we expect. The `traceplot` displays histograms of MCMC samples from the two Normal components of the mixture models (labeled as `norm1` and `norm2`), and the marginal posterior distributions for each weight (with $w2$ in orange and $w1$ in blue).
@@ -329,7 +329,7 @@ plt.colorbar(h2_image).set_label('Joint Likelihood')
 ```
 
 
-![png](MixtureModelsBinnedUnbinned_files/MixtureModelsBinnedUnbinned_33_0.png)
+![png](2018-03-21-binned-unbinned-spectral-fits-pymc3_files/fig_33_0.png)
 
 
 Taking the mean of each weight's marginal likelihood as a reasonable guess for the true weight, we can evaluate how closely the ML model matches the data.
@@ -383,7 +383,7 @@ plt.legend(loc = 'upper left');
 ```
 
 
-![png](MixtureModelsBinnedUnbinned_files/MixtureModelsBinnedUnbinned_37_0.png)
+![png](2018-03-21-binned-unbinned-spectral-fits-pymc3_files/fig_37_0.png)
 
 
 # Discussion
