@@ -38,8 +38,7 @@ obsSource2 = stats.norm(loc = mu2, scale = sd2)
 data = np.append(obsSource1.rvs(size = nObs1), obsSource2.rvs(size = nObs2))
 nObs = len(data)
 print(nObs)
-
-    3000
+>>3000
 {% endhighlight %}
 
 We can histogram the observations in `data` to visualize what was collected by our imaginary experiment.
@@ -69,7 +68,7 @@ binWidX = h_bin_edges[1] - h_bin_edges[0]
 h_bin_centers = h_bin_edges[:-1] + binWidX/2.
 ```
 
-![png](/assets//assets/2018-03-21-binned-unbinned-spectral-fits-pymc3_files/fig_7_0.png)
+![png](/assets/2018-03-21-binned-unbinned-spectral-fits-pymc3_files/fig_7_0.png)
 
 # Modeling the data
 
