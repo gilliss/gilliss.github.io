@@ -62,7 +62,7 @@ plt.xlim(rangeX)
 h_bin_heights, h_bin_edges = plt.hist(data, bins = 'rice', range = rangeX, density=False)[:2]
 
 # get some info about the binning
-nBinsX = len(h_n)
+nBinsX = len(h_bin_heights)
 binWidX = h_bin_edges[1] - h_bin_edges[0]
 
 # we will later want the bin centers, so lets calculate them
