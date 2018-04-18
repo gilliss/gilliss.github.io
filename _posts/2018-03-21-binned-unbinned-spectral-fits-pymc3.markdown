@@ -77,7 +77,7 @@ We now propose a mixture model to explain the data. For simplicity, we claim to 
 
 $$ X \sim f(x|w_1,w_2) = w_1 \text{Normal}(-1, 2) + w_2 \text{Normal}(5, 2). $$
 
-We are only uncertain of the weights of the two distributions in our mixture model, which we now estimate through maximum likelihood methods, with the help of `PyMC3`.
+We are only uncertain of the weights of the two distributions in our mixture model, which we now estimate through maximum likelihood methods, with the help of PyMC3.
 
 # A binned fit
 
@@ -94,7 +94,7 @@ $$ L = \prod_{k=1}^{\texttt{nBinsX}} \text{Poisson}(h_k|m_k) $$
 
 Note that, since there are two unknown parameters, we are essentially searching for a maximum in the two-dimensional space of the likelihood function. We could search through this space, using brute force, by setting up a grid of $w_1$ and $w_2$ values and evaluating $L$ at everypoint, but this strategy would become inconvenient for problems with higher-dimensional likelihood functions.
 
-Instead, we can intellegently sample points from the likelihood function using Markov Chain Monte Carlo (MCMC) methods. Setting this intellegent sampling up in `PyMC3`, we have the following.
+Instead, we can intellegently sample points from the likelihood function using Markov Chain Monte Carlo (MCMC) methods. Setting this intellegent sampling up in PyMC3, we have the following.
 
 
 {% highlight python linenos %}
@@ -130,7 +130,7 @@ with pm.Model() as model:
 >> 100% ... 10500/10500 [00:03<00:00, 2886.57it/s]
 {% endhighlight %}
 
-Let's use the trace object from `PyMC3` to check out the results of the MCMC search.
+Let's use the trace object from PyMC3 to check out the results of the MCMC search.
 
 {% highlight python linenos %}
 # import pandas to readout the trace object
@@ -232,7 +232,7 @@ The likelihood function assessing the match between the model and the 3000 obser
 
 $$ L = \prod_i^{3000} f(x_i|w_1,w_2) $$
 
-We can set this up in `PyMC3` as follows.
+We can set this up in PyMC3 as follows.
 
 
 {% highlight python linenos %}
@@ -271,7 +271,7 @@ with pm.Model() as model:
 >> 100% ... 10500/10500 [00:22<00:00, 463.57it/s]
 {% endhighlight %}
 
-We use the trace object from `PyMC3` to check out the results of the MCMC search.
+We use the trace object from PyMC3 to check out the results of the MCMC search.
 
 {% highlight python linenos %}
 # view a summary of the MCMC trace
