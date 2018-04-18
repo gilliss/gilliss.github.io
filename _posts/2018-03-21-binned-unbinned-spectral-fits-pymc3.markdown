@@ -8,13 +8,13 @@ categories: pymc3 fitting
 
 In this post, we'll explore some basic implementations of a mixture model in PyMC3. Namely, we write out binned and unbinned fitting routines for a set of data drawn from two gaussian processes.
 
-To start, we imagine an experiment that repeatedly observes one random variable $X$. For any one observation, the realized value $x$ of this $X$ could have originated from one of several— say, $n$— processes. In this way, the probability distribution $f(x|\theta)$, for $X$, is given by the combination of several sub-distributions $\{p_i\}$, with relative weights $\{w_i\}$.
+To start, we imagine an experiment that repeatedly observes one random variable $X$. For any one observation, the realized value $x$ of this $X$ could have originated from one of several— say, $n$— processes. In this way, the probability distribution $f(x\|\theta)$, for $X$, is given by the combination of several sub-distributions $\{p_i\}$, with relative weights $\{w_i\}$.
 
-$$ X \sim f(x|\theta) = \sum_{i=1}^{n} w_i p_i(x|\theta_i) $$
+$$ X \sim f(x\|\theta) = \sum_{i=1}^{n} w_i p_i(x\|\theta_i) $$
 
 For our experiment, let's have $x$ be a scalar drawn from the mixture distribution,
 
-$$ X \sim f(x|\theta) = w_1 \text{Normal}(x | \mu_1, \sigma_1) + w_2 \text{Normal}(x | \mu_2, \sigma_2). $$
+$$ X \sim f(x\|\theta) = w_1 \text{Normal}(x | \mu_1, \sigma_1) + w_2 \text{Normal}(x | \mu_2, \sigma_2). $$
 
 In this case, $\theta = \{\theta_1, \theta_2\} = \{w_1, \mu_1, \sigma_1, w_2, \mu_2, \sigma_2\}$ is the set of parameters upon which $f$ is conditioned.
 
@@ -78,7 +78,7 @@ h_bin_centers = h_bin_edges[:-1] + binWidX/2.
 
 We now propose a mixture model to explain the data. For simplicity, we claim to have a good idea of the location and spread of each gaussian. So, we posit
 
-$$ X \sim f(x|w_1,w_2) = w_1 \text{Normal}(-1, 2) + w_2 \text{Normal}(5, 2). $$
+$$ X \sim f(x\|w_1,w_2) = w_1 \text{Normal}(-1, 2) + w_2 \text{Normal}(5, 2). $$
 
 We are only uncertain of the weights of the two distributions in our mixture model, which we now estimate through maximum likelihood methods, with the help of `PyMC3`.
 
@@ -235,7 +235,7 @@ plt.legend(loc = 'upper left');
 We can once more estimate the weights that allow our mixture model to best match the data. This time, however,
 we will not first reduce the data by histrogramming; we will instead use each of the individual observations. This procedure is known as an unbinned fit.
 
-Our likelihood function in this unbinned case will not make use of bin heights. Instead, the unbinned ML fit proceeds by interatively proposing weights, plugging them into the mixture model, and then evaluating how well the observed values $x$ align with the mixture model. For instance, if many of the $\{x_i\}$ lie in the tails of the mixture model (where $f(x|w_1,w_2)$ is small), there is poor alignment. Likewise, if few of the $\{x_i\}$ lie in the bulk of the mixture model (where $f(x|w_1,w_2)$ is large), there is poor alignment. We're looking for the happy medium.
+Our likelihood function in this unbinned case will not make use of bin heights. Instead, the unbinned ML fit proceeds by interatively proposing weights, plugging them into the mixture model, and then evaluating how well the observed values $x$ align with the mixture model. For instance, if many of the $\{x_i\}$ lie in the tails of the mixture model (where $f(x\|w_1,w_2)$ is small), there is poor alignment. Likewise, if few of the $\{x_i\}$ lie in the bulk of the mixture model (where $f(x\|w_1,w_2)$ is large), there is poor alignment. We're looking for the happy medium.
 
 The likelihood function assessing the match between the model and the 3000 observations is
 
