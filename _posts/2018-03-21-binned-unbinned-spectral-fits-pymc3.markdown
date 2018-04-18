@@ -23,7 +23,7 @@ In this case, $\theta = \{\theta_1, \theta_2\} = \{w_1, \mu_1, \sigma_1, w_2, \m
 We simulate 3000 observations for this experiment as follows.
 
 
-{% highlight python linenos=table %}
+{% highlight python linenos %}
 # import numpy for numerical operations on arrays and scipy for random number generation
 import numpy as np
 import scipy.stats as stats
@@ -45,7 +45,7 @@ print(nObs)
 We can histogram the observations in `data` to visualize what was collected by our imaginary experiment.
 
 
-{% highlight python linenos=table %}
+{% highlight python linenos %}
 # import matplotlib for visualizations
 import matplotlib.pyplot as plt
 %matplotlib inline
@@ -97,7 +97,7 @@ Note that, since there are two unknown parameters, we are essentially searching 
 Instead, we can intellegently sample points from the likelihood function using Markov Chain Monte Carlo (MCMC) methods. Setting this intellegent sampling up in `PyMC3`, we have the following.
 
 
-{% highlight python linenos=table %}
+{% highlight python linenos %}
 # import pymc for likelihood modeling and MCMC
 import pymc3 as pm
 
@@ -133,7 +133,7 @@ with pm.Model() as model:
 
 Let's use the trace object from `PyMC3` to check out the results of the MCMC search.
 
-{% highlight python linenos=table %}
+{% highlight python linenos %}
 # import pandas to readout the trace object
 import pandas as pd
 
@@ -152,7 +152,7 @@ From the trace, we can also view the MCMC steps for each weight and histogram th
 marginal likelihood distribution (or marginal posterior distribution, if we had used non-uniform priors).
 
 
-{% highlight python linenos=table %}
+{% highlight python linenos %}
 # have pymc3 plot the chains and marginal likelihood distributions
 pm.traceplot(trace);
 {% endhighlight %}
@@ -166,7 +166,7 @@ pm.traceplot(trace);
 Let's view the joint likelihood distribution.
 
 
-{% highlight python linenos=table %}
+{% highlight python linenos %}
 # create a hist2d of the joint likelihood distribution
 plt.figure()
 plt.title('Joint Likelihood from Binned Fit')
@@ -183,7 +183,7 @@ plt.colorbar(h2_image).set_label('Joint Likelihood')
 Taking the mean of each weight's marginal likelihood as a reasonable guess for the true weight, we can evaluate how closely the ML model matches the data.
 
 
-{% highlight python linenos=table %}
+{% highlight python linenos %}
 # pull out the mean of the weight results
 w1 = df_summary.loc['w1']['mean']
 w2 = df_summary.loc['w2']['mean']
@@ -199,7 +199,7 @@ print('actual nObs = %d' % nObs)
 {% endhighlight %}
 
 
-{% highlight python linenos=table %}
+{% highlight python linenos %}
 # prepare visualizations of the scaled mixture model
 linspaceX = np.linspace(rangeX[0], rangeX[1], nBinsX)
 model1 = w1 * obsSource1.pdf(linspaceX)
@@ -236,7 +236,7 @@ $$ L = \prod_i^{3000} f(x_i|w_1,w_2) $$
 We can set this up in `PyMC3` as follows.
 
 
-{% highlight python linenos=table %}
+{% highlight python linenos %}
 # setup pymc3 model and sampling
 with pm.Model() as model:
     # define the weights of the mixture model components, each having a flat prior
@@ -277,7 +277,7 @@ with pm.Model() as model:
 
 We use the trace object from `PyMC3` to check out the results of the MCMC search.
 
-{% highlight python linenos=table %}
+{% highlight python linenos %}
 # view a summary of the MCMC trace
 df_summary = pm.summary(trace)
 print(df_summary)
@@ -308,7 +308,7 @@ Again we see that the ratio of weights is $w2/w1 ≈ 2$, as we expect. The `trac
 We can view the joint likelihood distribution for the weights. The distribution is narrow and highly correlated because the `pm.mixture` environment constrains the weight samples to obey $w1 + w2 = 1$ (see `pymc3/mixture.py::logp()`).
 
 
-{% highlight python linenos=table %}
+{% highlight python linenos %}
 # create a hist2d of the joint likelihood distribution
 plt.figure()
 plt.title('Joint Likelihood from Unbinned Fit')
@@ -325,7 +325,7 @@ plt.colorbar(h2_image).set_label('Joint Likelihood')
 Taking the mean of each weight's marginal likelihood as a reasonable guess for the true weight, we can evaluate how closely the ML model matches the data.
 
 
-{% highlight python linenos=table %}
+{% highlight python linenos %}
 # pull out the mean of the weight results
 w1 = df_summary.loc['w__0']['mean']
 w2 = df_summary.loc['w__1']['mean']
@@ -348,7 +348,7 @@ print('actual nObs = %d' % nObs)
 To visualize the model against the histogram of the data, we can either scale the model up to match the histogram— as we did in the previous cell—, or scale the histogram down to match the model. This scaling is needed, since our model would not be able to match the original bin heights— it knows nothing of them. The model knows only of the *density* of the data. Below, we scale the histogram to unit integral. We also plot a subset of the 3000 individual observations to convey how those observations are distributed.
 
 
-{% highlight python linenos=table %}
+{% highlight python linenos %}
 # a normalized histogram of the data
 plt.figure()
 plt.title('Normed Data, Individual Observations, Mixture Model')
