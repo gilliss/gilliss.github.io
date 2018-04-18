@@ -23,7 +23,7 @@ In this case, $\theta = \{\theta_1, \theta_2\} = \{w_1, \mu_1, \sigma_1, w_2, \m
 We simulate 3000 observations for this experiment as follows.
 
 
-```python
+{% highlight python %}
 # import numpy for numerical operations on arrays and scipy for random number generation
 import numpy as np
 import scipy.stats as stats
@@ -38,7 +38,7 @@ obsSource2 = stats.norm(loc = mu2, scale = sd2)
 data = np.append(obsSource1.rvs(size = nObs1), obsSource2.rvs(size = nObs2))
 nObs = len(data)
 print(nObs)
-```
+{% endhighlight %}
 
     3000
 
