@@ -38,6 +38,7 @@ obsSource2 = stats.norm(loc = mu2, scale = sd2)
 data = np.append(obsSource1.rvs(size = nObs1), obsSource2.rvs(size = nObs2))
 nObs = len(data)
 print(nObs)
+
 >> 3000
 {% endhighlight %}
 
@@ -121,8 +122,9 @@ with pm.Model() as model:
 
     # draw posterior samples
     trace = pm.sample(draws = 10000, step = step, chains = 1)
-    Sequential sampling (1 chains in 1 job)
-    CompoundStep
+
+>>Sequential sampling (1 chains in 1 job)
+>>    CompoundStep
 >> >Metropolis: [w2_interval__]
 >> >Metropolis: [w1_interval__]
 >> 100%|██████████| 10500/10500 [00:03<00:00, 2886.57it/s]
@@ -131,7 +133,6 @@ with pm.Model() as model:
 
 Let's use the trace object from `PyMC3` to check out the results of the MCMC search.
 
-
 {% highlight python linenos=table %}
 # import pandas to readout the trace object
 import pandas as pd
@@ -139,7 +140,6 @@ import pandas as pd
 # view a summary of the MCMC trace
 df_summary = pm.summary(trace)
 print(df_summary)
-
 
 >>               mean         sd  mc_error      hpd_2.5     hpd_97.5
 >>    w1   527.041567  18.323054  0.381805   490.273632   561.412043
@@ -193,7 +193,6 @@ nObs1_model = (1/binWidX) * w1 * 1 # 1 represents the integral of the nObs1 PDF
 nObs2_model = (1/binWidX) * w2 * 1 # 1 represents the integral of the nObs2 PDF
 print('predicted nObs = %.2f + %.2f = %.2f' % (nObs1_model, nObs2_model, nObs1_model + nObs2_model))
 print('actual nObs = %d' % nObs)
-
 
 >>    predicted nObs = 975.03 + 2034.12 = 3009.15
 >>    actual nObs = 3000
