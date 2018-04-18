@@ -38,10 +38,9 @@ obsSource2 = stats.norm(loc = mu2, scale = sd2)
 data = np.append(obsSource1.rvs(size = nObs1), obsSource2.rvs(size = nObs2))
 nObs = len(data)
 print(nObs)
-{% endhighlight %}
 
     3000
-
+{% endhighlight %}
 
 We can histogram the observations in `data` to visualize what was collected by our imaginary experiment.
 
