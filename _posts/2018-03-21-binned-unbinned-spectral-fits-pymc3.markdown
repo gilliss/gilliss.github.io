@@ -10,11 +10,11 @@ In this post, we'll explore some basic implementations of a mixture model in PyM
 
 To start, we imagine an experiment that repeatedly observes one random variable $X$. For any one observation, the realized value $x$ of this $X$ could have originated from one of several— say, $n$— processes. In this way, the probability distribution $f(x &#124; \theta)$, for $X$, is given by the combination of several sub-distributions $\{p_i\}$, with relative weights $\{w_i\}$.
 
-$$ X \sim f(x &#124; \theta) = \sum_{i=1}^{n} w_i p_i(x &#124; \theta_i) $$
+$$ X \sim f(x | \theta) = \sum_{i=1}^{n} w_i p_i(x | \theta_i) $$
 
 For our experiment, let's have $x$ be a scalar drawn from the mixture distribution,
 
-$$ X \sim f(x &#124; \theta) = w_1 \text{Normal}(x | \mu_1, \sigma_1) + w_2 \text{Normal}(x | \mu_2, \sigma_2). $$
+$$ X \sim f(x | \theta) = w_1 \text{Normal}(x | \mu_1, \sigma_1) + w_2 \text{Normal}(x | \mu_2, \sigma_2). $$
 
 In this case, $\theta = \{\theta_1, \theta_2\} = \{w_1, \mu_1, \sigma_1, w_2, \mu_2, \sigma_2\}$ is the set of parameters upon which $f$ is conditioned.
 
@@ -78,7 +78,7 @@ h_bin_centers = h_bin_edges[:-1] + binWidX/2.
 
 We now propose a mixture model to explain the data. For simplicity, we claim to have a good idea of the location and spread of each gaussian. So, we posit
 
-$$ X \sim f(x &#124; w_1,w_2) = w_1 \text{Normal}(-1, 2) + w_2 \text{Normal}(5, 2). $$
+$$ X \sim f(x | w_1,w_2) = w_1 \text{Normal}(-1, 2) + w_2 \text{Normal}(5, 2). $$
 
 We are only uncertain of the weights of the two distributions in our mixture model, which we now estimate through maximum likelihood methods, with the help of `PyMC3`.
 
