@@ -10,11 +10,11 @@ In this post, we'll explore some basic implementations of a mixture model in PyM
 
 To start, we imagine an experiment that repeatedly observes one random variable $X$. For any one observation, the realized value $x$ of this $X$ could have originated from one of several— say, $n$— processes. In this way, the probability distribution $f(x &#124; \theta)$, for $X$, is given by the combination of several sub-distributions $\{p_i\}$, with relative weights $\{w_i\}$.
 
-$$ X \sim f(x | \theta) = \sum_{i=1}^{n} w_i p_i(x | \theta_i) $$
+$$ X \sim f(x|\theta) = \sum_{i=1}^{n} w_i p_i(x|\theta_i) $$
 
 For our experiment, let's have $x$ be a scalar drawn from the mixture distribution,
 
-$$ X \sim f(x | \theta) = w_1 \text{Normal}(x | \mu_1, \sigma_1) + w_2 \text{Normal}(x | \mu_2, \sigma_2). $$
+$$ X \sim f(x|\theta) = w_1 \text{Normal}(x | \mu_1, \sigma_1) + w_2 \text{Normal}(x | \mu_2, \sigma_2). $$
 
 In this case, $\theta = \{\theta_1, \theta_2\} = \{w_1, \mu_1, \sigma_1, w_2, \mu_2, \sigma_2\}$ is the set of parameters upon which $f$ is conditioned.
 
