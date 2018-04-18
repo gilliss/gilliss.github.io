@@ -264,15 +264,15 @@ with pm.Model() as model:
     # draw posterior samples
     trace = pm.sample(draws = 10000, step = step, chains = 1)
 
->>    Sequential sampling (1 chains in 1 job)
->>    CompoundStep
->>    >Metropolis: [w_stickbreaking__]
->>    >NUTS: [norm2, norm1]
->>    100%|█████████▉| 10464/10500 [00:22<00:00, 463.85it/s]/Applications/anaconda3/envs/Fit/lib/python3.6/site-packages/numpy/core/fromnumeric.py:2957: RuntimeWarning: Mean of empty slice.
->>      out=out, **kwargs)
->>    100%|██████████| 10500/10500 [00:22<00:00, 463.57it/s]
->>    Tuning was enabled throughout the whole trace.
->>    Only one chain was sampled, this makes it impossible to run some convergence checks
+>> Sequential sampling (1 chains in 1 job)
+>> CompoundStep
+>> >Metropolis: [w_stickbreaking__]
+>> >NUTS: [norm2, norm1]
+>> 100%|█████████▉| 10464/10500 [00:22<00:00, 463.85it/s]/Applications/anaconda3/envs/Fit/lib/python3.6/site-packages/numpy/core/fromnumeric.py:2957: RuntimeWarning: Mean of empty slice.
+>>   out=out, **kwargs)
+>> 100%|██████████| 10500/10500 [00:22<00:00, 463.57it/s]
+>> Tuning was enabled throughout the whole trace.
+>> Only one chain was sampled, this makes it impossible to run some convergence checks
 {% endhighlight %}
 
 We use the trace object from `PyMC3` to check out the results of the MCMC search.
