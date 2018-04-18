@@ -38,13 +38,13 @@ obsSource2 = stats.norm(loc = mu2, scale = sd2)
 data = np.append(obsSource1.rvs(size = nObs1), obsSource2.rvs(size = nObs2))
 nObs = len(data)
 print(nObs)
->>3000
+>> 3000
 {% endhighlight %}
 
 We can histogram the observations in `data` to visualize what was collected by our imaginary experiment.
 
 
-```python
+{% highlight python linenos=table %}
 # import matplotlib for visualizations
 import matplotlib.pyplot as plt
 %matplotlib inline
@@ -66,7 +66,7 @@ binWidX = h_bin_edges[1] - h_bin_edges[0]
 
 # we will later want the bin centers, so lets calculate them
 h_bin_centers = h_bin_edges[:-1] + binWidX/2.
-```
+{% endhighlight %}
 
 ![png](/assets/2018-03-21-binned-unbinned-spectral-fits-pymc3_files/fig_7_0.png)
 
@@ -96,7 +96,7 @@ Note that, since there are two unknown parameters, we are essentially searching 
 Instead, we can intellegently sample points from the likelihood function using Markov Chain Monte Carlo (MCMC) methods. Setting this intellegent sampling up in `PyMC3`, we have the following.
 
 
-```python
+{% highlight python linenos=table %}
 # import pymc for
 import pymc3 as pm
 
@@ -121,33 +121,30 @@ with pm.Model() as model:
 
     # draw posterior samples
     trace = pm.sample(draws = 10000, step = step, chains = 1)
-```
-
-```
     Sequential sampling (1 chains in 1 job)
     CompoundStep
-    >Metropolis: [w2_interval__]
-    >Metropolis: [w1_interval__]
-    100%|██████████| 10500/10500 [00:03<00:00, 2886.57it/s]
-    Only one chain was sampled, this makes it impossible to run some convergence checks
-```
+>> >Metropolis: [w2_interval__]
+>> >Metropolis: [w1_interval__]
+>> 100%|██████████| 10500/10500 [00:03<00:00, 2886.57it/s]
+>> Only one chain was sampled, this makes it impossible to run some convergence checks
+{% endhighlight %}
 
 Let's use the trace object from `PyMC3` to check out the results of the MCMC search.
 
 
-```python
+{% highlight python linenos=table %}
 # import pandas to readout the trace object
 import pandas as pd
 
 # view a summary of the MCMC trace
 df_summary = pm.summary(trace)
 print(df_summary)
-```
 
-               mean         sd  mc_error      hpd_2.5     hpd_97.5
-    w1   527.041567  18.323054  0.381805   490.273632   561.412043
-    w2  1099.525432  25.340886  0.544281  1050.710203  1149.119203
 
+>>               mean         sd  mc_error      hpd_2.5     hpd_97.5
+>>    w1   527.041567  18.323054  0.381805   490.273632   561.412043
+>>    w2  1099.525432  25.340886  0.544281  1050.710203  1149.119203
+{% endhighlight %}
 
 We see that the ratio of weights is $w2/w1 \approx 2$, as we'd expect from our generating of the data; we drew twice as many events from `obsSource2` as we did from `obsSource1`.
 
@@ -155,10 +152,10 @@ From the trace, we can also view the MCMC steps for each weight and histogram th
 marginal likelihood distribution (or marginal posterior distribution, if we had used non-uniform priors).
 
 
-```python
+{% highlight python linenos=table %}
 # have pymc3 plot the chains and marginal likelihood distributions
 pm.traceplot(trace);
-```
+{% endhighlight %}
 
 
 ![png](/assets/2018-03-21-binned-unbinned-spectral-fits-pymc3_files/fig_18_0.png)
@@ -169,7 +166,7 @@ pm.traceplot(trace);
 Let's view the joint likelihood distribution.
 
 
-```python
+{% highlight python linenos=table %}
 # create a hist2d of the joint likelihood distribution
 plt.figure()
 plt.title('Joint Likelihood from Binned Fit')
@@ -177,7 +174,7 @@ plt.xlabel('w1')
 plt.ylabel('w2')
 h2_image = plt.hist2d(trace['w1'], trace['w2'], bins=100, cmap = 'viridis')[3]
 plt.colorbar(h2_image).set_label('Joint Likelihood')
-```
+{% endhighlight %}
 
 
 ![png](/assets/2018-03-21-binned-unbinned-spectral-fits-pymc3_files/fig_21_0.png)
@@ -186,7 +183,7 @@ plt.colorbar(h2_image).set_label('Joint Likelihood')
 Taking the mean of each weight's marginal likelihood as a reasonable guess for the true weight, we can evaluate how closely the ML model matches the data.
 
 
-```python
+{% highlight python linenos=table %}
 # pull out the mean of the weight results
 w1 = df_summary.loc['w1']['mean']
 w2 = df_summary.loc['w2']['mean']
@@ -196,14 +193,14 @@ nObs1_model = (1/binWidX) * w1 * 1 # 1 represents the integral of the nObs1 PDF
 nObs2_model = (1/binWidX) * w2 * 1 # 1 represents the integral of the nObs2 PDF
 print('predicted nObs = %.2f + %.2f = %.2f' % (nObs1_model, nObs2_model, nObs1_model + nObs2_model))
 print('actual nObs = %d' % nObs)
-```
-
-    predicted nObs = 975.03 + 2034.12 = 3009.15
-    actual nObs = 3000
 
 
+>>    predicted nObs = 975.03 + 2034.12 = 3009.15
+>>    actual nObs = 3000
+{% endhighlight %}
 
-```python
+
+{% highlight python linenos=table %}
 # prepare visualizations of the scaled mixture model
 linspaceX = np.linspace(rangeX[0], rangeX[1], nBinsX)
 model1 = w1 * obsSource1.pdf(linspaceX)
@@ -220,7 +217,7 @@ plt.plot(linspaceX, model1, color = 'xkcd:orange', linewidth=3, dashes = [2, 2, 
 plt.plot(linspaceX, model2, color = 'xkcd:blue', linewidth=3, dashes = [2, 2, 2, 2], label = '2 Model')
 plt.plot(linspaceX, model1 + model2, color = 'xkcd:red', label = 'Total Model')
 plt.legend(loc = 'upper left');
-```
+{% endhighlight %}
 
 
 ![png](/assets/2018-03-21-binned-unbinned-spectral-fits-pymc3_files/fig_24_0.png)
@@ -240,7 +237,7 @@ $$ L = \prod_i^{3000} f(x_i|w_1,w_2) $$
 We can set this up in `PyMC3` as follows.
 
 
-```python
+{% highlight python linenos=table %}
 # setup pymc3 model and sampling
 with pm.Model() as model:
     # define the weights of the mixture model components, each having a flat prior
@@ -267,23 +264,21 @@ with pm.Model() as model:
 
     # draw posterior samples
     trace = pm.sample(draws = 10000, step = step, chains = 1)
-```
-```
-    Sequential sampling (1 chains in 1 job)
-    CompoundStep
-    >Metropolis: [w_stickbreaking__]
-    >NUTS: [norm2, norm1]
-    100%|█████████▉| 10464/10500 [00:22<00:00, 463.85it/s]/Applications/anaconda3/envs/Fit/lib/python3.6/site-packages/numpy/core/fromnumeric.py:2957: RuntimeWarning: Mean of empty slice.
-      out=out, **kwargs)
-    100%|██████████| 10500/10500 [00:22<00:00, 463.57it/s]
-    Tuning was enabled throughout the whole trace.
-    Only one chain was sampled, this makes it impossible to run some convergence checks
-```
+
+>>    Sequential sampling (1 chains in 1 job)
+>>    CompoundStep
+>>    >Metropolis: [w_stickbreaking__]
+>>    >NUTS: [norm2, norm1]
+>>    100%|█████████▉| 10464/10500 [00:22<00:00, 463.85it/s]/Applications/anaconda3/envs/Fit/lib/python3.6/site-packages/numpy/core/fromnumeric.py:2957: RuntimeWarning: Mean of empty slice.
+>>      out=out, **kwargs)
+>>    100%|██████████| 10500/10500 [00:22<00:00, 463.57it/s]
+>>    Tuning was enabled throughout the whole trace.
+>>    Only one chain was sampled, this makes it impossible to run some convergence checks
+{% endhighlight %}
 
 We use the trace object from `PyMC3` to check out the results of the MCMC search.
 
-
-```python
+{% highlight python linenos=table %}
 # view a summary of the MCMC trace
 df_summary = pm.summary(trace)
 print(df_summary)
@@ -293,15 +288,15 @@ print('w2/w1 = %.2f' % (df_summary.loc['w__1']['mean'] / df_summary.loc['w__0'][
 
 # have pymc3 plot the chains and marginal likelihood distributions
 pm.traceplot(trace);
-```
 
-                  mean        sd  mc_error   hpd_2.5  hpd_97.5
-    norm1__0 -0.983890  1.978366  0.018363 -4.940810  2.797312
-    norm2__0  5.012095  1.972506  0.019112  1.221044  8.958915
-    w__0      0.325619  0.009638  0.000227  0.306269  0.344305
-    w__1      0.674381  0.009638  0.000227  0.655695  0.693731
-    w2/w1 = 2.07
-
+>>                  mean        sd  mc_error   hpd_2.5  hpd_97.5
+>>    norm1__0 -0.983890  1.978366  0.018363 -4.940810  2.797312
+>>    norm2__0  5.012095  1.972506  0.019112  1.221044  8.958915
+>>    w__0      0.325619  0.009638  0.000227  0.306269  0.344305
+>>    w__1      0.674381  0.009638  0.000227  0.655695  0.693731
+>>
+>>    w2/w1 = 2.07
+{% endhighlight %}
 
 
 ![png](/assets/2018-03-21-binned-unbinned-spectral-fits-pymc3_files/fig_29_1.png)
@@ -314,7 +309,7 @@ Again we see that the ratio of weights is $w2/w1 ≈ 2$, as we expect. The `trac
 We can view the joint likelihood distribution for the weights. The distribution is narrow and highly correlated because the `pm.mixture` environment constrains the weight samples to obey $w1 + w2 = 1$ (see `pymc3/mixture.py::logp()`).
 
 
-```python
+{% highlight python linenos=table %}
 # create a hist2d of the joint likelihood distribution
 plt.figure()
 plt.title('Joint Likelihood from Unbinned Fit')
@@ -322,7 +317,7 @@ plt.xlabel('w1')
 plt.ylabel('w2')
 h2_image = plt.hist2d(trace['w'][:,0], trace['w'][:,1], bins=100, cmap = 'viridis')[3]
 plt.colorbar(h2_image).set_label('Joint Likelihood')
-```
+{% endhighlight %}
 
 
 ![png](/assets/2018-03-21-binned-unbinned-spectral-fits-pymc3_files/fig_33_0.png)
@@ -331,7 +326,7 @@ plt.colorbar(h2_image).set_label('Joint Likelihood')
 Taking the mean of each weight's marginal likelihood as a reasonable guess for the true weight, we can evaluate how closely the ML model matches the data.
 
 
-```python
+{% highlight python linenos=table %}
 # pull out the mean of the weight results
 w1 = df_summary.loc['w__0']['mean']
 w2 = df_summary.loc['w__1']['mean']
@@ -345,17 +340,16 @@ print('predicted nObs = %.2f + %.2f = %.2f' % (nObs1_model, nObs2_model, nObs1_m
 print('scaled predicted nObs = %d (%.2f + %.2f) = %.2f'
       % (nObs, nObs1_model, nObs2_model, nObs*(nObs1_model + nObs2_model)))
 print('actual nObs = %d' % nObs)
-```
 
-    predicted nObs = 0.33 + 0.67 = 1.00
-    scaled predicted nObs = 3000 (0.33 + 0.67) = 3000.00
-    actual nObs = 3000
-
+>>    predicted nObs = 0.33 + 0.67 = 1.00
+>>    scaled predicted nObs = 3000 (0.33 + 0.67) = 3000.00
+>>    actual nObs = 3000
+{% endhighlight %}
 
 To visualize the model against the histogram of the data, we can either scale the model up to match the histogram— as we did in the previous cell—, or scale the histogram down to match the model. This scaling is needed, since our model would not be able to match the original bin heights— it knows nothing of them. The model knows only of the *density* of the data. Below, we scale the histogram to unit integral. We also plot a subset of the 3000 individual observations to convey how those observations are distributed.
 
 
-```python
+{% highlight python linenos=table %}
 # a normalized histogram of the data
 plt.figure()
 plt.title('Normed Data, Individual Observations, Mixture Model')
@@ -376,7 +370,7 @@ plt.plot(linspaceX, model1 + model2, color = 'xkcd:red', label = 'Total Model')
 data_subset = data[1:-1:30] # take every 30th observation
 plt.plot(data_subset, np.zeros(len(data_subset)), 'y|', ms=20, label = 'observations')
 plt.legend(loc = 'upper left');
-```
+{% endhighlight %}
 
 
 ![png](/assets/2018-03-21-binned-unbinned-spectral-fits-pymc3_files/fig_37_0.png)
