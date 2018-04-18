@@ -123,7 +123,7 @@ with pm.Model() as model:
     # draw posterior samples
     trace = pm.sample(draws = 10000, step = step, chains = 1)
 
->>Sequential sampling (1 chains in 1 job)
+>> Sequential sampling (1 chains in 1 job)
 >>    CompoundStep
 >> >Metropolis: [w2_interval__]
 >> >Metropolis: [w1_interval__]
