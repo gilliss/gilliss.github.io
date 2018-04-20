@@ -361,7 +361,7 @@ plt.plot(linspaceX, model2, color = 'xkcd:blue', linewidth=3, dashes = [2, 2], l
 plt.plot(linspaceX, model1 + model2, color = 'xkcd:red', label = 'Total Model')
 
 # plot some of the observations along the horizontal axis
-data_subset = data[1:-1:30] # take every 30th observation
+data_subset = data[::30] # take every 30th observation
 plt.plot(data_subset, np.zeros(len(data_subset)), 'y|', ms=20, label = 'observations')
 plt.legend(loc = 'upper left');
 {% endhighlight %}
