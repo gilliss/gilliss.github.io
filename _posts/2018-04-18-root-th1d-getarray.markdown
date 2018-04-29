@@ -40,7 +40,7 @@ The next question is what data `fArray` points to in the context of a TH1D. To a
 
 1. The user instantiates the TH1D with some number of bins `nbins` (which does not include under- and overflow bins), and a histogram range, from `xlow` to `xup`.
 2. `nbins` and the range get passed into the inherited [TH1 constructor][root-th1-constructor], which loads its protected `TAxis fXaxis` member with those values. In particular `fNbins = nbins`.
-3. The TH1 constructor queries `fAxis` for the number of bins and sets the TH1 integer data member `fNcells` to `fNbins + 2`. This is `fNcells = fXaxis.GetNbins()+2`.
+3. The TH1 constructor queries `fAxis` for the number of bins and sets the TH1 integer data member `fNcells` to `fNbins + 2`. This is `fNcells = fXaxis.GetNbins() + 2`.
 4. The value of `fNcells` is then used in the [TH1D constructor][root-th1d-constructor] to set the length of `fArray` via `TArrayD::Set(fNcells)`.
 
 What is `fNcells`? We know its value is the number of user-set bins plus two. This is consistent with the [comment near its declaration][root-th1-fncells], "number of bins(1D) ... +U/Overflows," which reveals that the two extra bins are for under- and overflow data.
