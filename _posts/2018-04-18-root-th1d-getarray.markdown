@@ -70,10 +70,10 @@ suggest adding to the [preamble of the TH1 class][root-th1-preamble], in the sec
 
 ```
 Bin contents for a histogram object, including under- and overflow, are stored in a TArray.
-The size of this array is recorded in the data members `TArray::fN` and TH1::fNCells.
+The size of this array is recorded in the data members `TArray::fN` and TH1::fNcells.
 The number of bins displayed on the histogram axis, which excludes under- and overflow,
-is recorded in the histogram's inherited data member TAxis::fNBins.
-The relationship between the three values should be fN = fNCells = fNBins + 2,
+is recorded in the histogram's inherited data member TAxis::fNbins.
+The relationship between the three values should be fN = fNcells = fNbins + 2,
 and all three values are accessible from the histogram object via the inherited methods GetSize(), GetNcells(), and GetNBinsX().
 The three methods return fN, fNcells, and fNbins, respectively.
 ```
