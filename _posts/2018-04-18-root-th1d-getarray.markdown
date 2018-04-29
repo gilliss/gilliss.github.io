@@ -15,7 +15,7 @@ for bin in range(1, nBins + 1):
   arrayOfData.append(aTH1D.GetBinContent(bin))
 {% endhighlight %}
 
-but there ought to be a method that returns all of the bin contents in one command. In searching, I came across [this old post][root-post] from the RootTalk forum, where it seems members were discussing the same topic. The last reply in the thread points out a `GetArray()` method that returns a pointer to a data member of the `TH1D` class, presumably an array of the bin contents. The `GetArray()` method seemed promising, but the reply left open the following questions (where we should replace floats with doubles for relevance to `TH1D`).
+but there ought to be a method that returns all of the bin contents in one command. In searching, I came across [this old post][root-post] from the RootTalk forum, where it seems members were discussing the same topic. The last reply in the thread points out a `GetArray()` method that returns a pointer to a data member of the TH1D class, presumably an array of the bin contents. The `GetArray()` method seemed promising, but the reply left open the following questions (where we should replace floats with doubles for relevance to TH1D).
 
 ```
 "Of course I am leaving for roottalk and for ROOT team the question
@@ -29,7 +29,7 @@ If yes where ?
 
 In short, the reply asks if `GetArray()` indeed returns the bin contents we are looking for, and if those bins include the underflow and overflow data. We can do some surfing through the source code to find these answers and finally lay to rest this question, which appears to have gone unanswered since 1998.
 
-Our first stop is the [TH1D documentation][root-th1d], where we see that `TH1D` does indeed have the public member function `GetArray()`, inherited from `TArrayD`. This inheritance from `TArrayD` is established in the class definition of `TH1D`, at [TH1.h:610][root-th1d-classdef]. `TH1D` inherits the [TArrayD public data member][root-tarrayd-farray] `Double_t *fArray` and its corresponding [public "get" method][root-tarrayd-getarray] `Double_t *GetArray() { return fArray; }`.
+Our first stop is the [TH1D documentation][root-th1d], where we see that TH1D does indeed have the public member function `GetArray()`, inherited from TArrayD. This inheritance from TArrayD is established in the [class definition of TH1D][root-th1d-classdef]. TH1D inherits the [TArrayD public data member][root-tarrayd-farray] `Double_t *fArray` and its corresponding [public "get" method][root-tarrayd-getarray] `Double_t *GetArray() { return fArray; }`.
 
 The next question is what data `fArray` holds in the context of `TH1D`. To answer this, we turn to the `TH1D` constructor, which, upon instantiation of a `TH1D` object, would presumably assign a suggestive shape or placeholder data to `fArray`. The constructor, at [`TH1.cxx:9485`][root-th1d-constructor], does just that with `TArrayD::Set(fNcells)`. What happens here is,
 1. The user instantiates the `TH1D` with some number of bins `nbins` (which does not include underflow and overflow bins), and a histogram range, from `xlow` to `xup`.
