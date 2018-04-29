@@ -5,30 +5,31 @@ date:   2018-04-18 16:24:29 -0800
 categories: root pyroot th1d c++
 ---
 
-I recently needed to pull some data from a C++ [ROOT][root-site] file into a Python analysis. Unfortunately, the data was stored in a [`TH1D`][[root-th1d]] and I didn't want to resort to a loop over bins, querying each bin for its contents. Using [PyROOT][pyroot-site], this would be
+I recently needed to pull some data from a C++ [ROOT][root-site] file into a Python analysis. Unfortunately, the data was stored in a [`TH1D`][root-th1d] and I didn't want to resort to a loop over bins, querying each bin for its contents. Using [PyROOT][pyroot-site], this would be
 
 {% highlight python %}
-# this snippet pulls out the contents of bins 1 through nBins, but ignores the underflow and overflow bins
-nBins = theTH1D.GetNBinsX()
+# this snippet pulls out the contents of bins 1 through nBins,
+# but ignores the underflow and overflow bins
+nBins = aTH1D.GetNBinsX()
 for bin in range(1, nBins + 1):
-  dataArray.append(theTH1D.GetBinContent(bin))
+  arrayOfData.append(aTH1D.GetBinContent(bin))
 {% endhighlight %}
 
-but there ought to be a method that returns all of the bin contents in one command. In searching, I came across [this old post][root-post] from the RootTalk forum, where it seems members were discussing the same topic. The last reply in the thread points out a `GetArray()` method that returns a pointer to a data member of the `TH1D` class, presumably an array of the bin contents. The `GetArray()` method seems promising, but the reply leaves open the following questions (where we should replace floats with doubles for relevance to `TH1D`).
+but there ought to be a method that returns all of the bin contents in one command. In searching, I came across [this old post][root-post] from the RootTalk forum, where it seems members were discussing the same topic. The last reply in the thread points out a `GetArray()` method that returns a pointer to a data member of the `TH1D` class, presumably an array of the bin contents. The `GetArray()` method seemed promising, but the reply left open the following questions (where we should replace floats with doubles for relevance to `TH1D`).
 
 ```
-Of course I am leaving for roottalk and for ROOT team the question
+"Of course I am leaving for roottalk and for ROOT team the question
 how one can figure out that [the returned] Float_t array is those bins. What about
 overflow and underflow bins. Are they present in this array or not,
 If yes where ?
 
   Does Int_t   TH1F::GetNbinsX()  returns the same number as
-       Int_t   TArray::GetSize();
+       Int_t   TArray::GetSize();"
 ```
 
-In short, the reply asks if `GetArray()` indeed returns the bin contents we are looking for, and if those bins include the underflow and overflow data. We can do some surfing through the source code to find these answers and finally lay to rest this question, which appears to have gone unanswered since Tue Dec 01 1998 - 19:38:12 MET.
+In short, the reply asks if `GetArray()` indeed returns the bin contents we are looking for, and if those bins include the underflow and overflow data. We can do some surfing through the source code to find these answers and finally lay to rest this question, which appears to have gone unanswered since 1998.
 
-Our first stop is the [`TH1D` documentation][root-th1d], where we see that `TH1D` does indeed have the public member function `GetArray()`, inherited from `TArrayD`. This inheritance from `TArrayD` is established in the class definition of `TH1D`, at [`TH1.h:610`][root-th1d-classdef]. `TH1D` inherits the `TArrayD` public data member [`Double_t *fArray`][root-tarrayd-farray] and its corresponding public "get" method [`Double_t *GetArray() { return fArray; }`][root-tarrayd-getarray].
+Our first stop is the [TH1D documentation][root-th1d], where we see that `TH1D` does indeed have the public member function `GetArray()`, inherited from `TArrayD`. This inheritance from `TArrayD` is established in the class definition of `TH1D`, at [TH1.h:610][root-th1d-classdef]. `TH1D` inherits the `TArrayD` public data member [`Double_t *fArray`][root-tarrayd-farray] and its corresponding public "get" method [`Double_t *GetArray() { return fArray; }`][root-tarrayd-getarray].
 
 The next question is what data `fArray` holds in the context of `TH1D`. To answer this, we turn to the `TH1D` constructor, which, upon instantiation of a `TH1D` object, would presumably assign a suggestive shape or placeholder data to `fArray`. The constructor, at [`TH1.cxx:9485`][root-th1d-constructor], does just that with `TArrayD::Set(fNcells)`. What happens here is,
 1. The user instantiates the `TH1D` with some number of bins `nbins` (which does not include underflow and overflow bins), and a histogram range, from `xlow` to `xup`.
@@ -41,8 +42,8 @@ So, we've established that `GetArray()` returns both the middling, and the under
 
 Now to answer the remaining questions.
 ```
-Does Int_t   TH1F::GetNbinsX()  returns the same number as
-     Int_t   TArray::GetSize();
+"Does Int_t   TH1F::GetNbinsX()  returns the same number as
+     Int_t   TArray::GetSize();"
 ```
 From the `TH1D` documentation, we see that `GetNbinsX()` is a public member function inherited from TH1. The function returns `fXaxis.GetNbins()`, which itself returns `fNbins`. Exploration of the TH1 constructor, above, told us that `fNbins = nbins = fNcells - 2`. The `GetSize()` method is a public member function of `TH1D` which it inherits from the `TArray` class. The method returns the `TArray` integer data member `fN` which corresponds to the number of elements in `fArray`. We encountered `fN` earlier, since this is the value that gets set when one calls `TArrayD::Set()`; `Set(fNcells)` yields `fN = fNcells`.
 
