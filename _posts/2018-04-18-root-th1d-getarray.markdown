@@ -77,7 +77,7 @@ The size of this array is recorded in the data members `TArray::fN` and TH1::fNc
 The number of bins displayed on the histogram axis, which excludes under- and overflow,
 is recorded in the histogram's inherited data member TAxis::fNbins.
 The relationship between the three values should be fN = fNcells = fNbins + 2,
-and all three values are accessible from the histogram object via the inherited methods GetSize(), GetNcells(), and GetNBinsX().
+and all three values are accessible from the histogram object via the inherited methods GetSize(), GetNcells(), and GetNbinsX().
 The three methods return fN, fNcells, and fNbins, respectively.
 ```
 
