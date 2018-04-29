@@ -62,7 +62,7 @@ Now to answer the remaining question.
 
 From the TH1D documentation, we see that `GetNbinsX()` is a public member function inherited from TH1. The function returns `fXaxis.GetNbins()`, which itself returns `fNbins`. Recall the exploration of the TH1 constructor, above, which revealed that `fNbins = nbins = fNcells - 2`.
 
-The `GetSize()` method is a public member function of TH1D which it inherits from the TArray class. The method returns TArray's integer data member `fN` which corresponds to the number of elements in `fArray`. We encountered `fN` earlier-- it was the value that got set by `TArrayD::Set()`; `Set(fNcells)` yields `fN = fNcells`.
+The `GetSize()` method is a public member function of TH1D, inherited from the TArray class. The method returns TArray's integer data member `fN` which corresponds to the number of elements in `fArray`. We encountered `fN` earlier-- it was the value that got set by `TArrayD::Set()`; `Set(fNcells)` yields `fN = fNcells`.
 
 # Summary
 
