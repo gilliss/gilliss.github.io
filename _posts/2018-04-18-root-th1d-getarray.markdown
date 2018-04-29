@@ -58,7 +58,6 @@ Bin contents, including under- and overflow, for a histogram object are stored i
 [root-site]: https://root.cern.ch/
 [pyroot-site]: https://root.cern.ch/pyroot
 [root-post]: https://root.cern.ch/root/roottalk/roottalk98/2318.html
-https://root-forum.cern.ch/t/loop-over-several-cuts-using-tcut/24718/2
 [root-th1d]: https://root.cern.ch/doc/master/classTH1D.html
 [root-th1d-classdef]: https://root.cern.ch/doc/master/TH1_8h_source.html#l00610
 [root-th1d-constructor]: https://root.cern.ch/doc/master/TH1_8cxx_source.html#l09485
