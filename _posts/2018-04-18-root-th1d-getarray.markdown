@@ -66,7 +66,7 @@ The `GetSize()` method is a public member function of TH1D, inherited from the T
 
 # Summary
 
-In summary, the three base classes TArray, TH1, and TAxis, each retain a data member describing the binning of a histogram. TArray holds `fN` which equals the number of bins, including under- and overflow. TH1 holds `fNcells`, which is equivalent to `fN`. Finally, TAxis holds `fNbins` which equals the number of bins, excluding under- and overflow. With this information, we can see that `TH1D::GetNbinsX()` returns the user defined number of bins, which is two less than the total number of bins in the data array. The total number of bins, which includes the two extra bins for under- and overflow, is returned by `TArray::GetSize()`, or equivalently by `TH1D::GetNcells()`.
+In summary, the three base classes, TArray, TH1, and TAxis, each retain a data member describing the binning of a histogram. TArray holds `fN` which equals the number of bins, including under- and overflow. TH1 holds `fNcells`, which is equivalent to `fN`. Finally, TAxis holds `fNbins` which equals the number of bins, excluding under- and overflow. With this information, we can see that `TH1D::GetNbinsX()` returns the user defined number of bins, which is two less than the total number of bins in the data array. The total number of bins, which includes the two extra bins for under- and overflow, is returned by `TArray::GetSize()`, or equivalently by `TH1D::GetNcells()`.
 
 After searching the source code to produce the information above, I believe a brief clarification of these topics is warranted in the ROOT documentation. I would
 suggest adding to the [preamble of the TH1 class][root-th1-preamble], in the section titled "Convention for numbering bins." The added text could read,
