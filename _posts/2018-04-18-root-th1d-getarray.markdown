@@ -5,7 +5,7 @@ date:   2018-04-18 16:24:29 -0800
 categories: root pyroot th1d c++
 ---
 
-I recently needed to pull some data from a C++ [ROOT][root-site] file into a Python analysis. Unfortunately, the data was stored in a [`TH1D`][root-th1d] and I didn't want to resort to a loop over bins, querying each bin for its contents. Using [PyROOT][pyroot-site], this would be
+I recently needed to pull some data from a C++ [ROOT][root-site] file into a Python analysis. Unfortunately, the data was stored in a [TH1D][root-th1d] and I didn't want to resort to a loop over bins, querying each bin for its contents. Using [PyROOT][pyroot-site], this would be
 
 {% highlight python %}
 # this snippet pulls out the contents of bins 1 through nBins,
@@ -29,7 +29,7 @@ If yes where ?
 
 In short, the reply asks if `GetArray()` indeed returns the bin contents we are looking for, and if those bins include the underflow and overflow data. We can do some surfing through the source code to find these answers and finally lay to rest this question, which appears to have gone unanswered since 1998.
 
-Our first stop is the [TH1D documentation][root-th1d], where we see that `TH1D` does indeed have the public member function `GetArray()`, inherited from `TArrayD`. This inheritance from `TArrayD` is established in the class definition of `TH1D`, at [TH1.h:610][root-th1d-classdef]. `TH1D` inherits the `TArrayD` public data member [`Double_t *fArray`][root-tarrayd-farray] and its corresponding public "get" method [`Double_t *GetArray() { return fArray; }`][root-tarrayd-getarray].
+Our first stop is the [TH1D documentation][root-th1d], where we see that `TH1D` does indeed have the public member function `GetArray()`, inherited from `TArrayD`. This inheritance from `TArrayD` is established in the class definition of `TH1D`, at [TH1.h:610][root-th1d-classdef]. `TH1D` inherits the [TArrayD public data member][root-tarrayd-farray] `Double_t *fArray` and its corresponding [public "get" method][root-tarrayd-getarray] `Double_t *GetArray() { return fArray; }`.
 
 The next question is what data `fArray` holds in the context of `TH1D`. To answer this, we turn to the `TH1D` constructor, which, upon instantiation of a `TH1D` object, would presumably assign a suggestive shape or placeholder data to `fArray`. The constructor, at [`TH1.cxx:9485`][root-th1d-constructor], does just that with `TArrayD::Set(fNcells)`. What happens here is,
 1. The user instantiates the `TH1D` with some number of bins `nbins` (which does not include underflow and overflow bins), and a histogram range, from `xlow` to `xup`.
