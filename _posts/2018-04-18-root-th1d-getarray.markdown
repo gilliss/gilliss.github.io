@@ -32,7 +32,7 @@ In short, the reply asks if `GetArray()` indeed returns the bin contents we are 
 
 Our first stop is the [TH1D documentation][root-th1d], where we see that TH1D does indeed have the public member function `GetArray()`, inherited from TArrayD. This inheritance is established in the [class definition of TH1D][root-th1d-classdef] where TH1D inherits the [TArrayD public data member][root-tarrayd-farray], `Double_t *fArray`, and its corresponding [public "get" method][root-tarrayd-getarray], `Double_t *GetArray()`.
 
-# `GetArray()`
+# GetArray()
 
 The next question is what data `fArray` points to in the context of a TH1D. To answer this, we turn to the TH1D constructor, which, upon instantiation of a TH1D object, would presumably associate a suggestive shape or placeholder data with `fArray`. The TH1D constructor, at [TH1.cxx:9485][root-th1d-constructor], does just that with `TArrayD::Set(fNcells)`. What happens here is,
 1. The user instantiates the TH1D with some number of bins `nbins` (which does not include under- and overflow bins), and a histogram range, from `xlow` to `xup`.
@@ -44,23 +44,32 @@ What is `fNcells`? We know its value is the number of user-set bins plus two. Th
 
 So, we've established that `GetArray()` returns both the middling, and the under- and overflow bins.
 
-# What's in `fArray`?
+# What's in fArray?
 
-Can we confirm that `fArray` indeed holds the contents of the histogram and not some other data? We can check the command for setting a histogram's bin contents, and see where it puts the data. `TH1D` inherits its `SetBinContent()` command from [`TH1::SetBinContent()`][root-th1-setbincontent], which calls on [`TH1::UpdateBinContent()`][root-th1-updatebincontent], which is overridden by [`TH1D::UpdateBinContent()`][root-th1d-updatebincontent] to set `fArray[bin] = content`. So, `fArray` is the object that gets filled with and holds the histogram's bin content.
+Can we confirm that `fArray` indeed holds the contents of the histogram and not some other data? Let's check the command for setting a histogram's bin contents, and see where it puts the data. TH1D inherits its `SetBinContent()` command from [`TH1::SetBinContent()`][root-th1-setbincontent], which calls on [`TH1::UpdateBinContent()`][root-th1-updatebincontent]. This second method is [overridden by TH1D][root-th1d-updatebincontent] to set `fArray[bin] = content`. So, `fArray` is indeed the object that gets filled with and holds the histogram's bin content.
+
+# What's the difference between these "get" methods?
 
 Now to answer the remaining questions.
+
 ```
 "Does Int_t   TH1F::GetNbinsX()  returns the same number as
      Int_t   TArray::GetSize();"
 ```
-From the `TH1D` documentation, we see that `GetNbinsX()` is a public member function inherited from TH1. The function returns `fXaxis.GetNbins()`, which itself returns `fNbins`. Exploration of the TH1 constructor, above, told us that `fNbins = nbins = fNcells - 2`. The `GetSize()` method is a public member function of `TH1D` which it inherits from the `TArray` class. The method returns the `TArray` integer data member `fN` which corresponds to the number of elements in `fArray`. We encountered `fN` earlier, since this is the value that gets set when one calls `TArrayD::Set()`; `Set(fNcells)` yields `fN = fNcells`.
 
-In summary, the three base classes `TArray`, `TH1`, and `TAxis`, each retain a data member indicating the binning of a histogram. `TArray` holds `fN` which equals the number of bins, including under- and overflow. `TH1` holds `fNcells`, which is equivalent to `fN`. And `TAxis` holds `fNbins` which equals the number of bins, excluding under- and overflow. With this information, we can see that `TH1F::GetNbinsX()` returns the user defined number of bins, a value that is two less than the total number of bins-- including under- and overflow-- which is returned by `TArray::GetSize()`.
+From the TH1D documentation, we see that `GetNbinsX()` is a public member function inherited from TH1. The function returns `fXaxis.GetNbins()`, which itself returns `fNbins`. Recall the exploration of the TH1 constructor, above, which revealed that `fNbins = nbins = fNcells - 2`.
 
-After searching the documentation and source code to produce the information above, I believe a brief clarification of these topics is warranted in the ROOT documentation. I would
-suggest documentation being placed in the [preamble of the `TH1` class][https://root.cern.ch/doc/master/TH1_8cxx_source.html#l00181], in the section titled "Convention for numbering bins." The added text could read,
+The `GetSize()` method is a public member function of TH1D which it inherits from the TArray class. The method returns TArray's integer data member `fN` which corresponds to the number of elements in `fArray`. We encountered `fN` earlier-- it was the value that got set by `TArrayD::Set()`; `Set(fNcells)` yields `fN = fNcells`.
+
+# Summary
+
+In summary, the three base classes TArray, TH1, and TAxis, each retain a data member describing the binning of a histogram. TArray holds `fN` which equals the number of bins, including under- and overflow. TH1 holds `fNcells`, which is equivalent to `fN`. Finally, TAxis holds `fNbins` which equals the number of bins, excluding under- and overflow. With this information, we can see that `TH1D::GetNbinsX()` returns the user defined number of bins, which is two less than the total number of bins in the data array. The total number of bins, which includes the two extra bins for under- and overflow, is returned by `TArray::GetSize()`, or equivalently by `TH1D::GetNcells()`.
+
+After searching the source code to produce the information above, I believe a brief clarification of these topics is warranted in the ROOT documentation. I would
+suggest adding to the [preamble of the TH1 class][https://root.cern.ch/doc/master/TH1_8cxx_source.html#l00181], in the section titled "Convention for numbering bins." The added text could read,
+
 ```
-Bin contents, including under- and overflow, for a histogram object are stored in a TArray. The size of this array is recorded in the data members `TArray::fN` and TH1::fNCells. The number of bins displayed on the histogram axis, which excluded under- and overflow, is recorded in the TH1's inherited TAxis::fNBins. The relationship between the three should be fN = fNCells = fNBins + 2, and all three values are accessible from the TH1* object via the inherited methods: TH1*::GetSize(), TH1*::GetNcells(), and TH1*::GetNBinsX(), respectively returning fN, fNcells, and fNbins.
+Bin contents for a histogram object, including under- and overflow, are stored in a TArray. The size of this array is recorded in the data members `TArray::fN` and TH1::fNCells. The number of bins displayed on the histogram axis, which excludes under- and overflow, is recorded in the histogram's inherited data member TAxis::fNBins. The relationship between the three values should be fN = fNCells = fNBins + 2, and all three values are accessible from the histogram object via the inherited methods GetSize(), GetNcells(), and GetNBinsX(). The three methods return fN, fNcells, and fNbins, respectively.
 ```
 
 [root-site]: https://root.cern.ch/
