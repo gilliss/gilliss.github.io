@@ -51,9 +51,9 @@ So, we've established that `GetArray()` returns `fArray` which includes both the
 
 Can we confirm that `fArray` indeed holds the contents of the histogram and not some other data? Let's check the command for setting a histogram's bin contents, and see where it puts the data. TH1D inherits its `SetBinContent()` command from [`TH1::SetBinContent()`][root-th1-setbincontent], which calls on [`TH1::UpdateBinContent()`][root-th1-updatebincontent]. This second method is [overridden by TH1D][root-th1d-updatebincontent] to set `fArray[bin] = content`. So, `fArray` is indeed the object that gets filled with and holds the histogram's bin content.
 
-# What's the difference between these "get" methods?
+# What's the difference between all these "get" methods?
 
-Now to answer the remaining questions.
+Now to answer the remaining question.
 
 ```
 "Does Int_t   TH1F::GetNbinsX()  returns the same number as
