@@ -30,11 +30,14 @@ If yes where ?
 
 In short, the reply asks if `GetArray()` indeed returns the bin contents we are looking for, and if those bins include the underflow and overflow data. We can do some surfing through the source code to find these answers and finally lay to rest this question, which appears to have gone unanswered since 1998.
 
-Our first stop is the [TH1D documentation][root-th1d], where we see that TH1D does indeed have the public member function `GetArray()`, inherited from TArrayD. This inheritance is established in the [class definition of TH1D][root-th1d-classdef] where TH1D inherits the [TArrayD public data member][root-tarrayd-farray], `Double_t *fArray`, and its corresponding [public "get" method][root-tarrayd-getarray], `Double_t *GetArray()`.
-
 # GetArray()
 
+Our first stop is the [TH1D documentation][root-th1d], where we see that TH1D does indeed have the public member function `GetArray()`, inherited from TArrayD. This inheritance is established in the [class definition of TH1D][root-th1d-classdef] where TH1D inherits the [TArrayD public data member][root-tarrayd-farray], `Double_t *fArray`, and its corresponding [public "get" method][root-tarrayd-getarray], `Double_t *GetArray()`.
+
+# The shape of fArray
+
 The next question is what data `fArray` points to in the context of a TH1D. To answer this, we turn to the TH1D constructor, which, upon instantiation of a TH1D object, would presumably associate a suggestive shape or placeholder data with `fArray`. The TH1D constructor, at [TH1.cxx:9485][root-th1d-constructor], does just that with `TArrayD::Set(fNcells)`. What happens here is,
+
 1. The user instantiates the TH1D with some number of bins `nbins` (which does not include under- and overflow bins), and a histogram range, from `xlow` to `xup`.
 2. `nbins` and the range get passed into the inherited [TH1 constructor][root-th1-constructor], which loads its protected `TAxis fXaxis` member with those values. In particular `fNbins = nbins`.
 3. The TH1 constructor queries `fAxis` for the number of bins and sets the TH1 integer data member `fNcells` to `fNbins + 2`. This is `fNcells = fXaxis.GetNbins()+2`.
@@ -42,7 +45,7 @@ The next question is what data `fArray` points to in the context of a TH1D. To a
 
 What is `fNcells`? We know its value is the number of user-set bins plus two. This is consistent with the [comment near its declaration][root-th1-fncells], "number of bins(1D) ... +U/Overflows," which reveals that the two extra bins are for under- and overflow data.
 
-So, we've established that `GetArray()` returns both the middling, and the under- and overflow bins.
+So, we've established that `GetArray()` returns `fArray` which includes both the middling, and the under- and overflow bins.
 
 # What's in fArray?
 
